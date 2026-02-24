@@ -1,0 +1,25 @@
+[package]
+name = "cyphal_can_transport"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+# C++との安全なFFIブリッジ
+cxx = "1.0"
+
+# Cyphal (UAVCAN v1) のRust実装
+canadensis = { git = "https://github.com/samcrow/canadensis" }
+canadensis_can = { git = "https://github.com/samcrow/canadensis", features = ["can-fd"] }
+canadensis_linux = { git = "https://github.com/samcrow/canadensis" }
+canadensis_data_types = { git = "https://github.com/samcrow/canadensis" }
+socketcan = "3.5.0"
+
+rand = "0.10.0"
+heapless = "0.9.2"
+canadensis_encoding = { git = "https://github.com/samcrow/canadensis" }
+
+[build-dependencies]
+cxx-build = "1.0"

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<robot name="cyphal_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Minimal robot structure -->
+  <link name="base_link"/>
+  <link name="link1"/>
+
+  <joint name="joint1" type="revolute">
+    <parent link="base_link"/>
+    <child link="link1"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14159" upper="3.14159" effort="10.0" velocity="1.0"/>
+  </joint>
+
+  <ros2_control name="CyphalRobot" type="system">
+    <hardware>
+      <plugin>ros2_cyphal_hardware/CyphalSystemHardware</plugin>
+      <param name="can_interface">vcan0</param>
+      <param name="node_id">123</param>
+    </hardware>
+
+    <joint name="joint1">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+
+      <!-- RX: デバイスから状態を受信 -->
+      <param name="rx_dsdl_type">reg.udral.physics.kinematics.rotation.Planar.0.1</param>
+      <param name="rx_subject_id">101</param>
+      <param name="map_state_position">angular_position.radian</param>
+      <param name="map_state_velocity">angular_velocity.radian_per_second</param>
+
+      <!-- TX: デバイスへ指令を送信 -->
+      <param name="tx_dsdl_type">reg.udral.physics.kinematics.rotation.PlanarTs.0.1</param>
+      <param name="tx_subject_id">201</param>
+      <param name="map_command_position">value.angular_position.radian</param>
+    </joint>
+  </ros2_control>
+</robot>

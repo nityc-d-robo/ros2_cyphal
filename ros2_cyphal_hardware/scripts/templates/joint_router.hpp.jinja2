@@ -1,0 +1,58 @@
+#pragma once
+#include <cstdint>
+#include <map>
+#include <string>
+#include <vector>
+{% for h in headers %}
+#include <{{ h }}>
+{% endfor %}
+
+namespace ros2_cyphal_hardware {
+
+class JointRouter {
+public:
+    // Cyphal受信 → hw_interfaces (state)
+    static void route_rx(uint16_t id, const uint8_t* payload, size_t size,
+                        std::map<std::string, double*>& hw_interfaces) {
+        switch(id) {
+            {% for joint in rx_joints %}
+            case {{ joint.subject_id }}: {
+                {{ joint.c_type }} msg;
+                size_t s = size;
+                if ({{ joint.c_type }}_deserialize_(&msg, payload, &s) >= 0) {
+                    {% for m in joint.mappings %}
+                    hw_interfaces["{{ m.interface }}"][{{ joint.index }}] = msg.{{ m.member }};
+                    {% endfor %}
+                }
+                break;
+            }
+            {% endfor %}
+            default: break;
+        }
+    }
+
+    // hw_interfaces (command) → Cyphalシリアライズ済みバイト列
+    static std::vector<uint8_t> route_tx(uint16_t id,
+                                         std::map<std::string, double*>& hw_interfaces) {
+        switch(id) {
+            {% for joint in tx_joints %}
+            case {{ joint.subject_id }}: {
+                {{ joint.c_type }} msg{};
+                {% for m in joint.mappings %}
+                msg.{{ m.member }} = static_cast<decltype(msg.{{ m.member }})>(
+                    hw_interfaces["{{ m.interface }}"][{{ joint.index }}]);
+                {% endfor %}
+                uint8_t buf[{{ joint.c_type }}_SERIALIZATION_BUFFER_SIZE_BYTES_];
+                size_t s = sizeof(buf);
+                if ({{ joint.c_type }}_serialize_(&msg, buf, &s) >= 0) {
+                    return std::vector<uint8_t>(buf, buf + s);
+                }
+                return {};
+            }
+            {% endfor %}
+            default: return {};
+        }
+    }
+};
+
+}

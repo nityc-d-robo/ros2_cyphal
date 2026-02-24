@@ -1,0 +1,10 @@
+<library path="ros2_cyphal_hardware">
+  <class name="ros2_cyphal_hardware/CyphalSystemHardware"
+         type="ros2_cyphal_hardware::CyphalSystemHardware"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      † Metaprogrammed † Cyphal hardware interface for ros2_control.
+      Automatically routes Cyphal subjects to joint states using URDF parameters.
+    </description>
+  </class>
+</library>

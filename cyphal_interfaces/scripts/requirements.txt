@@ -1,0 +1,10 @@
+# Pinned dependency versions for DSDL → ROS2 codegen.
+# Tested with pydsdl 1.24.3 / PyYAML 6.0.3.
+# Bump versions intentionally after re-testing the conversion output.
+nunavut==2.3.1
+Jinja2==3.1.6
+setuptools>=60.0
+# some downstream ROS2 tools (launch-ros, generate-parameter-library-py)
+# expect setuptools and typeguard to be installable in the venv
+# (only needed for the warnings during colcon build).
+typeguard>=2.13
