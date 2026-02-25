@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import argparse
 import xml.etree.ElementTree as ET
-import subprocess
 from jinja2 import Environment, FileSystemLoader
 
 def dsdl_to_c_info(dsdl_string):
@@ -14,29 +13,19 @@ def dsdl_to_c_info(dsdl_string):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--xacro", required=True)
+    parser.add_argument("--bus", required=True, help="Path to bus.xml (cyphal mapping config)")
     parser.add_argument("--output", required=True)
     parser.add_argument("--template-dir", required=True)
     args = parser.parse_args()
 
-    # Xacro展開
-    urdf_xml = subprocess.check_output(["xacro", args.xacro]).decode('utf-8')
-    root = ET.fromstring(urdf_xml)
+    root = ET.parse(args.bus).getroot()
 
     rx_joints = []
     tx_joints = []
     headers = set()
 
-    joint_elements = root.findall(".//ros2_control/joint")
-
-    for i, joint in enumerate(joint_elements):
-        # <cyphal> タグを探す
-        cyphal_node = joint.find("cyphal")
-        if cyphal_node is None:
-            continue # cyphal設定がないジョイントはスキップ
-
-        # --- State (デバイスから状態を受信) ---
-        for state_node in cyphal_node.findall("state"):
+    for i, joint in enumerate(root.findall("joint")):
+        for state_node in joint.findall("state"):
             dsdl_type = state_node.get("dsdl_type")
             subject_id = state_node.get("subject_id")
             c_type, c_header = dsdl_to_c_info(dsdl_type)
@@ -54,8 +43,7 @@ def main():
                 "mappings": mappings
             })
 
-        # --- Command (デバイスへ指令を送信) ---
-        for command_node in cyphal_node.findall("command"):
+        for command_node in joint.findall("command"):
             dsdl_type = command_node.get("dsdl_type")
             subject_id = command_node.get("subject_id")
             c_type, c_header = dsdl_to_c_info(dsdl_type)

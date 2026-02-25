@@ -31,7 +31,7 @@ public:
         }
     }
 
-    // xacro の <cyphal><state> から生成された RX subject_id 一覧
+    // bus.xml の <state> から生成された RX subject_id 一覧
     static std::vector<uint16_t> get_rx_subject_ids() {
         return {
             {% for joint in rx_joints %}
@@ -40,7 +40,7 @@ public:
         };
     }
 
-    // xacro の <cyphal><command> から生成された TX subject_id 一覧
+    // bus.xml の <command> から生成された TX subject_id 一覧
     static std::vector<uint16_t> get_tx_subject_ids() {
         return {
             {% for joint in tx_joints %}

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<cyphal>
+  <joint name="joint1">
+    <state dsdl_type="reg.udral.physics.kinematics.rotation.Planar.0.1" subject_id="101">
+      <map interface="position" member="angular_position.radian"/>
+      <map interface="velocity" member="angular_velocity.radian_per_second"/>
+    </state>
+    <command dsdl_type="reg.udral.physics.kinematics.rotation.PlanarTs.0.1" subject_id="201">
+      <map interface="position" member="value.angular_position.radian"/>
+    </command>
+  </joint>
+</cyphal>

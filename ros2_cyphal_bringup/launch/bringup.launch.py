@@ -12,7 +12,7 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
     # Get package paths
-    hardware_pkg = get_package_share_directory('ros2_cyphal_hardware')
+    description_pkg = get_package_share_directory('usagi_description')
     bringup_pkg = get_package_share_directory('ros2_cyphal_bringup')
 
     # Paths to files
@@ -20,7 +20,7 @@ def generate_launch_description():
         [
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
-            os.path.join(hardware_pkg, "urdf", "robot.xacro"),
+            os.path.join(description_pkg, "urdf", "usagi.xacro"),
         ]
     )
     robot_description = {"robot_description": ParameterValue(robot_description_content, value_type=str)}
