@@ -5,7 +5,6 @@ import subprocess
 from jinja2 import Environment, FileSystemLoader
 
 def dsdl_to_c_info(dsdl_string):
-    # "reg.udral...Planar.0.1" -> "reg_udral_..._0_1", "reg/udral/.../Planar_0_1.h"
     parts = dsdl_string.split('.')
     name_parts = parts[:-2]
     version = f"{parts[-2]}_{parts[-1]}"
@@ -28,52 +27,48 @@ def main():
     tx_joints = []
     headers = set()
 
-    # ルートが <ros2_control> 直接（xacroスニペット）の場合と
-    # <robot> ルートのフルURDFの場合の両方に対応
-    if root.tag == "ros2_control":
-        joint_elements = root.findall("joint")
-    else:
-        joint_elements = root.findall(".//ros2_control/joint")
+    joint_elements = root.findall(".//ros2_control/joint")
 
     for i, joint in enumerate(joint_elements):
-        params = {p.get("name"): p.text for p in joint.findall("param")}
+        # <cyphal> タグを探す
+        cyphal_node = joint.find("cyphal")
+        if cyphal_node is None:
+            continue # cyphal設定がないジョイントはスキップ
 
-        # --- RX ---
-        if "rx_dsdl_type" in params and "rx_subject_id" in params:
-            c_type, c_header = dsdl_to_c_info(params["rx_dsdl_type"])
+        # --- State (デバイスから状態を受信) ---
+        for state_node in cyphal_node.findall("state"):
+            dsdl_type = state_node.get("dsdl_type")
+            subject_id = state_node.get("subject_id")
+            c_type, c_header = dsdl_to_c_info(dsdl_type)
             headers.add(c_header)
 
-            mappings = []
-            for key, value in params.items():
-                if key.startswith("map_state_"):
-                    mappings.append({
-                        "interface": key.replace("map_state_", ""),
-                        "member": value
-                    })
+            mappings = [
+                {"interface": m.get("interface"), "member": m.get("member")}
+                for m in state_node.findall("map")
+            ]
 
             rx_joints.append({
                 "index": i,
-                "subject_id": params["rx_subject_id"],
+                "subject_id": subject_id,
                 "c_type": c_type,
                 "mappings": mappings
             })
 
-        # --- TX ---
-        if "tx_dsdl_type" in params and "tx_subject_id" in params:
-            c_type, c_header = dsdl_to_c_info(params["tx_dsdl_type"])
+        # --- Command (デバイスへ指令を送信) ---
+        for command_node in cyphal_node.findall("command"):
+            dsdl_type = command_node.get("dsdl_type")
+            subject_id = command_node.get("subject_id")
+            c_type, c_header = dsdl_to_c_info(dsdl_type)
             headers.add(c_header)
 
-            mappings = []
-            for key, value in params.items():
-                if key.startswith("map_command_"):
-                    mappings.append({
-                        "interface": key.replace("map_command_", ""),
-                        "member": value
-                    })
+            mappings = [
+                {"interface": m.get("interface"), "member": m.get("member")}
+                for m in command_node.findall("map")
+            ]
 
             tx_joints.append({
                 "index": i,
-                "subject_id": params["tx_subject_id"],
+                "subject_id": subject_id,
                 "c_type": c_type,
                 "mappings": mappings
             })

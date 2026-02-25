@@ -31,6 +31,24 @@ public:
         }
     }
 
+    // xacro の <cyphal><state> から生成された RX subject_id 一覧
+    static std::vector<uint16_t> get_rx_subject_ids() {
+        return {
+            {% for joint in rx_joints %}
+            {{ joint.subject_id }},
+            {% endfor %}
+        };
+    }
+
+    // xacro の <cyphal><command> から生成された TX subject_id 一覧
+    static std::vector<uint16_t> get_tx_subject_ids() {
+        return {
+            {% for joint in tx_joints %}
+            {{ joint.subject_id }},
+            {% endfor %}
+        };
+    }
+
     // hw_interfaces (command) → Cyphalシリアライズ済みバイト列
     static std::vector<uint8_t> route_tx(uint16_t id,
                                          std::map<std::string, double*>& hw_interfaces) {

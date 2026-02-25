@@ -14,27 +14,26 @@
   </joint>
 
   <ros2_control name="CyphalRobot" type="system">
-    <hardware>
-      <plugin>ros2_cyphal_hardware/CyphalSystemHardware</plugin>
-      <param name="can_interface">vcan0</param>
-      <param name="node_id">123</param>
-    </hardware>
+  <hardware>
+    <plugin>ros2_cyphal_hardware/CyphalSystemHardware</plugin>
+    <param name="can_interface">vcan0</param>
+    <param name="node_id">123</param>
+  </hardware>
 
-    <joint name="joint1">
-      <command_interface name="position"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
+  <joint name="joint1">
+    <command_interface name="position"/>
+    <state_interface name="position"/>
+    <state_interface name="velocity"/>
 
-      <!-- RX: デバイスから状態を受信 -->
-      <param name="rx_dsdl_type">reg.udral.physics.kinematics.rotation.Planar.0.1</param>
-      <param name="rx_subject_id">101</param>
-      <param name="map_state_position">angular_position.radian</param>
-      <param name="map_state_velocity">angular_velocity.radian_per_second</param>
-
-      <!-- TX: デバイスへ指令を送信 -->
-      <param name="tx_dsdl_type">reg.udral.physics.kinematics.rotation.PlanarTs.0.1</param>
-      <param name="tx_subject_id">201</param>
-      <param name="map_command_position">value.angular_position.radian</param>
-    </joint>
-  </ros2_control>
+    <cyphal>
+      <state dsdl_type="reg.udral.physics.kinematics.rotation.Planar.0.1" subject_id="101">
+        <map interface="position" member="angular_position.radian"/>
+        <map interface="velocity" member="angular_velocity.radian_per_second"/>
+      </state>
+      <command dsdl_type="reg.udral.physics.kinematics.rotation.PlanarTs.0.1" subject_id="201">
+        <map interface="position" member="value.angular_position.radian"/>
+      </command>
+    </cyphal>
+  </joint>
+</ros2_control>
 </robot>

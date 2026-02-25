@@ -51,27 +51,22 @@ public:
         g_current_hardware_interface = this;
 
         // =========================================================
-        // 各関節のパラメータを読んで subscribe / start_publishing 登録
+        // JointRouter（コード生成済み）から subject_id を取得して登録
+        // xacro の <cyphal> タグ情報はビルド時に JointRouter へ焼き込み済み
         // =========================================================
-        for (size_t i = 0; i < info_.joints.size(); i++) {
-            const auto & params = info_.joints[i].parameters;
 
-            // --- RX: subject_id を受信購読 ---
-            // canadensis は subscribe_message を呼ばないと
-            // receive() にフレームが届かないため必須
-            if (params.count("rx_subject_id")) {
-                uint16_t rx_id = static_cast<uint16_t>(std::stoi(params.at("rx_subject_id")));
-                // payload_size_max: DSDLタイプの ExtentBytes。64 は一般的な小型メッセージに十分
-                (*cyphal_node_)->subscribe_subject(rx_id, 64);
-            }
+        // --- RX: <cyphal><state subject_id="..."> の購読登録 ---
+        // canadensis は subscribe_subject を呼ばないと receive() にフレームが届かない
+        for (uint16_t rx_id : JointRouter::get_rx_subject_ids()) {
+            // payload_size_max: DSDLタイプの ExtentBytes。64 は小型メッセージに十分
+            (*cyphal_node_)->subscribe_subject(rx_id, 64);
+        }
 
-            // --- TX: subject_id への送信を登録 ---
-            // canadensis は start_publishing を呼ばないと publish() が NotPublishing エラーになる
-            if (params.count("tx_subject_id")) {
-                uint16_t tx_id = static_cast<uint16_t>(std::stoi(params.at("tx_subject_id")));
-                (*cyphal_node_)->start_publishing_subject(tx_id);
-                tx_subjects_.emplace_back(tx_id, i);
-            }
+        // --- TX: <cyphal><command subject_id="..."> の送信登録 ---
+        // canadensis は start_publishing_subject を呼ばないと publish() が NotPublishing エラーになる
+        for (uint16_t tx_id : JointRouter::get_tx_subject_ids()) {
+            (*cyphal_node_)->start_publishing_subject(tx_id);
+            tx_subjects_.emplace_back(tx_id, 0);  // joint_idx はルーター内に焼き込み済みのため未使用
         }
 
         return hardware_interface::CallbackReturn::SUCCESS;
