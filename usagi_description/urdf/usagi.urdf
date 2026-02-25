@@ -1,46 +1,32 @@
 <?xml version="1.0"?>
-<robot name="usagi" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="usagi">
 
-  <!-- Common joint parameters -->
-  <xacro:property name="joint_effort"   value="1.37"/>
-  <xacro:property name="joint_velocity" value="7.0"/>
-  <xacro:property name="joint_damping"  value="0.18"/>
-  <xacro:property name="joint_friction" value="0.005"/>
-
-  <!-- Material -->
-  <material name="#ffffff">
-    <color rgba="1.000 1.000 1.000 1.0"/>
-  </material>
-
-  <!-- Macro: Gazebo spring-damper settings for a joint -->
-  <xacro:macro name="gazebo_joint" params="joint_name">
-    <gazebo reference="${joint_name}">
-      <implicitSpringDamper>true</implicitSpringDamper>
-      <springStiffness>100</springStiffness>
-      <springReference>0.0</springReference>
-    </gazebo>
-  </xacro:macro>
-
-  <!-- ==================== Links & Joints ==================== -->
+<!-- material color setting -->
+<material name="#ffffff">
+  <color rgba="1.000 1.000 1.000 1.0"/>
+</material>
 
   <link name="base_link"/>
 
-  <joint name="base_link_to_usagi_body" type="fixed">
+  <joint name="base_link_to_usagi_body" type="revolute">
     <origin xyz="0 0 0" rpy="0.0 0.0 0.0"/>
     <axis xyz="1 0 0"/>
     <parent link="base_link"/>
     <child link="usagi_body"/>
-    <limit lower="-3.14159" upper="3.14159" effort="${joint_effort}" velocity="${joint_velocity}"/>
-    <dynamics damping="${joint_damping}" friction="${joint_friction}"/>
+    <limit lower="-3.14159" upper="3.14159" effort="1.37" velocity="7.0"/>
+    <dynamics damping="0.18" friction="0.005"/>
   </joint>
-  <xacro:gazebo_joint joint_name="base_link_to_usagi_body"/>
+  <gazebo reference="base_link_to_usagi_body">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>100</springStiffness>
+    <springReference>0.0</springReference>
+  </gazebo>
 
   <link name="usagi_body">
     <inertial>
       <origin xyz="-0.000791 0.152744 0.075809" rpy="0.0 0.0 0.0"/>
       <mass value="5"/>
-      <inertia ixx="0.05879425" ixy="-0.00047679" ixz="-0.00085104"
-               iyy="0.04130902" iyz="-0.00222019" izz="0.06728805"/>
+      <inertia ixx="0.05879425" ixy="-0.00047679" ixz="-0.00085104" iyy="0.04130902" iyz="-0.00222019" izz="0.06728805"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -51,23 +37,25 @@
     </visual>
   </link>
 
-  <!-- wheel1 -->
   <joint name="usagi_body_to_usagi_wheel1" type="revolute">
     <origin xyz="0.028 0.2094 0.019" rpy="0.0 0.0 0.0"/>
     <axis xyz="1 0 0"/>
     <parent link="usagi_body"/>
     <child link="usagi_wheel1"/>
-    <limit lower="-3.14159" upper="3.14159" effort="${joint_effort}" velocity="${joint_velocity}"/>
-    <dynamics damping="${joint_damping}" friction="${joint_friction}"/>
+    <limit lower="-3.14159" upper="3.14159" effort="1.37" velocity="7.0"/>
+    <dynamics damping="0.18" friction="0.005"/>
   </joint>
-  <xacro:gazebo_joint joint_name="usagi_body_to_usagi_wheel1"/>
+  <gazebo reference="usagi_body_to_usagi_wheel1">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>100</springStiffness>
+    <springReference>0.0</springReference>
+  </gazebo>
 
   <link name="usagi_wheel1">
     <inertial>
       <origin xyz="0.045948 -2.9e-05 -1.1e-05" rpy="0.0 0.0 0.0"/>
       <mass value="0.108014008018"/>
-      <inertia ixx="0.00005287" ixy="-0.00000014" ixz="-0.00000005"
-               iyy="0.00007331" iyz="0.00000001" izz="0.00007328"/>
+      <inertia ixx="0.00005287" ixy="-0.00000014" ixz="-0.00000005" iyy="0.00007331" iyz="0.00000001" izz="0.00007328"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -78,23 +66,25 @@
     </visual>
   </link>
 
-  <!-- wheel2 -->
   <joint name="usagi_body_to_usagi_wheel2" type="revolute">
     <origin xyz="-0.028 0.2094 0.019" rpy="0.0 0.0 0.0"/>
     <axis xyz="1 0 0"/>
     <parent link="usagi_body"/>
     <child link="usagi_wheel2"/>
-    <limit lower="-3.14159" upper="3.14159" effort="${joint_effort}" velocity="${joint_velocity}"/>
-    <dynamics damping="${joint_damping}" friction="${joint_friction}"/>
+    <limit lower="-3.14159" upper="3.14159" effort="1.37" velocity="7.0"/>
+    <dynamics damping="0.18" friction="0.005"/>
   </joint>
-  <xacro:gazebo_joint joint_name="usagi_body_to_usagi_wheel2"/>
+  <gazebo reference="usagi_body_to_usagi_wheel2">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>100</springStiffness>
+    <springReference>0.0</springReference>
+  </gazebo>
 
   <link name="usagi_wheel2">
     <inertial>
       <origin xyz="-0.045936 8e-06 -1.9e-05" rpy="0.0 0.0 0.0"/>
       <mass value="0.108014008018"/>
-      <inertia ixx="0.00005287" ixy="-0.00000013" ixz="0.00000007"
-               iyy="0.0000733" iyz="-0.00000002" izz="0.00007329"/>
+      <inertia ixx="0.00005287" ixy="-0.00000013" ixz="0.00000007" iyy="0.0000733" iyz="-0.00000002" izz="0.00007329"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -105,23 +95,25 @@
     </visual>
   </link>
 
-  <!-- arm1 -->
   <joint name="usagi_body_to_usagi_arm1" type="revolute">
     <origin xyz="0.084 0.0355 0.15" rpy="0.0 0.0 0.087266"/>
     <axis xyz="1 0 0"/>
     <parent link="usagi_body"/>
     <child link="usagi_arm1"/>
-    <limit lower="-3.14159" upper="3.14159" effort="${joint_effort}" velocity="${joint_velocity}"/>
-    <dynamics damping="${joint_damping}" friction="${joint_friction}"/>
+    <limit lower="-3.14159" upper="3.14159" effort="1.37" velocity="7.0"/>
+    <dynamics damping="0.18" friction="0.005"/>
   </joint>
-  <xacro:gazebo_joint joint_name="usagi_body_to_usagi_arm1"/>
+  <gazebo reference="usagi_body_to_usagi_arm1">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>100</springStiffness>
+    <springReference>0.0</springReference>
+  </gazebo>
 
   <link name="usagi_arm1">
     <inertial>
       <origin xyz="0.011306 0.060628 0.078314" rpy="0.0 0.0 0.0"/>
       <mass value="0.027948774241"/>
-      <inertia ixx="0.00010035" ixy="-0.00000293" ixz="-0.00001057"
-               iyy="0.00009005" iyz="-0.00002552" izz="0.00002893"/>
+      <inertia ixx="0.00010035" ixy="-0.00000293" ixz="-0.00001057" iyy="0.00009005" iyz="-0.00002552" izz="0.00002893"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -132,22 +124,25 @@
     </visual>
   </link>
 
-  <!-- cup1 (passive: free-swinging, no motor control) -->
   <joint name="usagi_arm1_to_usagi_cup1" type="revolute">
     <origin xyz="0.02 0.060087 0.143" rpy="0.0 0.0 0.0"/>
     <axis xyz="1 0 0"/>
     <parent link="usagi_arm1"/>
     <child link="usagi_cup1"/>
-    <limit lower="-3.14159" upper="3.14159" effort="0.0" velocity="${joint_velocity}"/>
-    <dynamics damping="0.01" friction="0.001"/>
+    <limit lower="-3.14159" upper="3.14159" effort="1.37" velocity="7.0"/>
+    <dynamics damping="0.18" friction="0.005"/>
   </joint>
+  <gazebo reference="usagi_arm1_to_usagi_cup1">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>100</springStiffness>
+    <springReference>0.0</springReference>
+  </gazebo>
 
   <link name="usagi_cup1">
     <inertial>
       <origin xyz="-0.000148 -0.030131 0.000884" rpy="0.0 0.0 0.0"/>
       <mass value="0.1"/>
-      <inertia ixx="0.00001645" ixy="0.00000007" ixz="0.00000009"
-               iyy="0.000011" iyz="-0.00000084" izz="0.00001552"/>
+      <inertia ixx="0.00001645" ixy="0.00000007" ixz="0.00000009" iyy="0.000011" iyz="-0.00000084" izz="0.00001552"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -158,23 +153,25 @@
     </visual>
   </link>
 
-  <!-- arm2 -->
   <joint name="usagi_body_to_usagi_arm2" type="revolute">
     <origin xyz="-0.084 0.0355 0.15" rpy="0.0 0.0 -0.087266"/>
     <axis xyz="1 0 0"/>
     <parent link="usagi_body"/>
     <child link="usagi_arm2"/>
-    <limit lower="-3.14159" upper="3.14159" effort="${joint_effort}" velocity="${joint_velocity}"/>
-    <dynamics damping="${joint_damping}" friction="${joint_friction}"/>
+    <limit lower="-3.14159" upper="3.14159" effort="1.37" velocity="7.0"/>
+    <dynamics damping="0.18" friction="0.005"/>
   </joint>
-  <xacro:gazebo_joint joint_name="usagi_body_to_usagi_arm2"/>
+  <gazebo reference="usagi_body_to_usagi_arm2">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>100</springStiffness>
+    <springReference>0.0</springReference>
+  </gazebo>
 
   <link name="usagi_arm2">
     <inertial>
       <origin xyz="-0.011553 0.060482 0.078817" rpy="0.0 0.0 0.0"/>
       <mass value="0.08"/>
-      <inertia ixx="0.00010168" ixy="0.00000291" ixz="0.00001075"
-               iyy="0.00009157" iyz="-0.00002522" izz="0.00002892"/>
+      <inertia ixx="0.00010168" ixy="0.00000291" ixz="0.00001075" iyy="0.00009157" iyz="-0.00002522" izz="0.00002892"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -185,22 +182,25 @@
     </visual>
   </link>
 
-  <!-- cup2 (passive: free-swinging, no motor control) -->
   <joint name="usagi_arm2_to_usagi_cup2" type="revolute">
     <origin xyz="-0.02 0.06 0.143" rpy="0.0 0.0 0.0"/>
     <axis xyz="1 0 0"/>
     <parent link="usagi_arm2"/>
     <child link="usagi_cup2"/>
-    <limit lower="-3.14159" upper="3.14159" effort="0.0" velocity="${joint_velocity}"/>
-    <dynamics damping="0.01" friction="0.001"/>
+    <limit lower="-3.14159" upper="3.14159" effort="1.37" velocity="7.0"/>
+    <dynamics damping="0.18" friction="0.005"/>
   </joint>
+  <gazebo reference="usagi_arm2_to_usagi_cup2">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>100</springStiffness>
+    <springReference>0.0</springReference>
+  </gazebo>
 
   <link name="usagi_cup2">
     <inertial>
       <origin xyz="-0.000148 -0.030131 0.000884" rpy="0.0 0.0 0.0"/>
       <mass value="0.1"/>
-      <inertia ixx="0.00001645" ixy="0.00000007" ixz="0.00000009"
-               iyy="0.000011" iyz="-0.00000084" izz="0.00001552"/>
+      <inertia ixx="0.00001645" ixy="0.00000007" ixz="0.00000009" iyy="0.000011" iyz="-0.00000084" izz="0.00001552"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -211,23 +211,25 @@
     </visual>
   </link>
 
-  <!-- arm3 -->
   <joint name="usagi_body_to_usagi_arm3" type="revolute">
     <origin xyz="0.052 0.1917 0.15" rpy="0.0 0.0 -0.349066"/>
     <axis xyz="1 0 0"/>
     <parent link="usagi_body"/>
     <child link="usagi_arm3"/>
-    <limit lower="-3.14159" upper="3.14159" effort="${joint_effort}" velocity="${joint_velocity}"/>
-    <dynamics damping="${joint_damping}" friction="${joint_friction}"/>
+    <limit lower="-3.14159" upper="3.14159" effort="1.37" velocity="7.0"/>
+    <dynamics damping="0.18" friction="0.005"/>
   </joint>
-  <xacro:gazebo_joint joint_name="usagi_body_to_usagi_arm3"/>
+  <gazebo reference="usagi_body_to_usagi_arm3">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>100</springStiffness>
+    <springReference>0.0</springReference>
+  </gazebo>
 
   <link name="usagi_arm3">
     <inertial>
       <origin xyz="0.01153 -0.060892 0.080374" rpy="0.0 0.0 0.0"/>
       <mass value="0.08"/>
-      <inertia ixx="0.00009422" ixy="0.00000257" ixz="-0.00000994"
-               iyy="0.00008525" iyz="0.00002242" izz="0.00002663"/>
+      <inertia ixx="0.00009422" ixy="0.00000257" ixz="-0.00000994" iyy="0.00008525" iyz="0.00002242" izz="0.00002663"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -238,15 +240,19 @@
     </visual>
   </link>
 
-  <!-- cup3 (passive: free-swinging, no motor control) -->
   <joint name="usagi_arm3_to_usagi_cup3" type="revolute">
     <origin xyz="0.019084 -0.064996 0.143" rpy="0.0 0.0 0.0"/>
     <axis xyz="1 0 0"/>
     <parent link="usagi_arm3"/>
     <child link="usagi_cup3"/>
-    <limit lower="-3.14159" upper="3.14159" effort="0.0" velocity="${joint_velocity}"/>
-    <dynamics damping="0.01" friction="0.001"/>
+    <limit lower="-3.14159" upper="3.14159" effort="1.37" velocity="7.0"/>
+    <dynamics damping="0.18" friction="0.005"/>
   </joint>
+  <gazebo reference="usagi_arm3_to_usagi_cup3">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>100</springStiffness>
+    <springReference>0.0</springReference>
+  </gazebo>
 
   <link name="usagi_cup3">
     <inertial>
@@ -263,23 +269,25 @@
     </visual>
   </link>
 
-  <!-- arm4 -->
   <joint name="usagi_body_to_usagi_arm4" type="revolute">
     <origin xyz="-0.052 0.1917 0.15" rpy="0.0 0.0 0.349066"/>
     <axis xyz="1 0 0"/>
     <parent link="usagi_body"/>
     <child link="usagi_arm4"/>
-    <limit lower="-3.14159" upper="3.14159" effort="${joint_effort}" velocity="${joint_velocity}"/>
-    <dynamics damping="${joint_damping}" friction="${joint_friction}"/>
+    <limit lower="-3.14159" upper="3.14159" effort="1.37" velocity="7.0"/>
+    <dynamics damping="0.18" friction="0.005"/>
   </joint>
-  <xacro:gazebo_joint joint_name="usagi_body_to_usagi_arm4"/>
+  <gazebo reference="usagi_body_to_usagi_arm4">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>100</springStiffness>
+    <springReference>0.0</springReference>
+  </gazebo>
 
   <link name="usagi_arm4">
     <inertial>
       <origin xyz="-0.014387 -0.059145 0.078019" rpy="0.0 0.0 0.0"/>
       <mass value="0.08"/>
-      <inertia ixx="0.00009241" ixy="-0.00000293" ixz="0.00001004"
-               iyy="0.00008272" iyz="0.00002399" izz="0.0000275"/>
+      <inertia ixx="0.00009241" ixy="-0.00000293" ixz="0.00001004" iyy="0.00008272" iyz="0.00002399" izz="0.0000275"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -290,22 +298,25 @@
     </visual>
   </link>
 
-  <!-- cup4 (passive: free-swinging, no motor control) -->
   <joint name="usagi_arm4_to_usagi_cup4" type="revolute">
     <origin xyz="-0.02 -0.07 0.133" rpy="0.0 0.0 0.0"/>
     <axis xyz="1 0 0"/>
     <parent link="usagi_arm4"/>
     <child link="usagi_cup4"/>
-    <limit lower="-3.14159" upper="3.14159" effort="0.0" velocity="${joint_velocity}"/>
-    <dynamics damping="0.01" friction="0.001"/>
+    <limit lower="-3.14159" upper="3.14159" effort="1.37" velocity="7.0"/>
+    <dynamics damping="0.18" friction="0.005"/>
   </joint>
+  <gazebo reference="usagi_arm4_to_usagi_cup4">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>100</springStiffness>
+    <springReference>0.0</springReference>
+  </gazebo>
 
   <link name="usagi_cup4">
     <inertial>
       <origin xyz="-4.3e-05 0.030123 0.000908" rpy="0.0 0.0 0.0"/>
       <mass value="0.1"/>
-      <inertia ixx="0.00001645" ixy="0.00000007" ixz="-0.00000009"
-               iyy="0.000011" iyz="0.00000084" izz="0.00001552"/>
+      <inertia ixx="0.00001645" ixy="0.00000007" ixz="-0.00000009" iyy="0.000011" iyz="0.00000084" izz="0.00001552"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -315,45 +326,5 @@
       <material name="#ffffff"/>
     </visual>
   </link>
-
-  <!-- ==================== ros2_control ==================== -->
-  <ros2_control name="CyphalRobot" type="system">
-    <hardware>
-      <plugin>ros2_cyphal_hardware/CyphalSystemHardware</plugin>
-      <param name="can_interface">vcan0</param>
-      <param name="node_id">123</param>
-    </hardware>
-
-    <joint name="usagi_body_to_usagi_wheel1">
-      <command_interface name="position"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="usagi_body_to_usagi_wheel2">
-      <command_interface name="position"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="usagi_body_to_usagi_arm1">
-      <command_interface name="position"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="usagi_body_to_usagi_arm2">
-      <command_interface name="position"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="usagi_body_to_usagi_arm3">
-      <command_interface name="position"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="usagi_body_to_usagi_arm4">
-      <command_interface name="position"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-  </ros2_control>
 
 </robot>
