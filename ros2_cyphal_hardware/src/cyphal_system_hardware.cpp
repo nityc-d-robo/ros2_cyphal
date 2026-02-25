@@ -1,5 +1,6 @@
 #include <hardware_interface/system_interface.hpp>
 #include <hardware_interface/types/hardware_interface_type_values.hpp>
+#include <hardware_interface/types/hardware_component_interface_params.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <pluginlib/class_list_macros.hpp>
 #include <optional>
@@ -29,8 +30,9 @@ private:
     std::vector<std::pair<uint16_t, size_t>> tx_subjects_;
 
 public:
-    hardware_interface::CallbackReturn on_init(const hardware_interface::HardwareInfo & info) override {
-        if (hardware_interface::SystemInterface::on_init(info) != hardware_interface::CallbackReturn::SUCCESS) {
+    hardware_interface::CallbackReturn on_init(
+        const hardware_interface::HardwareComponentInterfaceParams & params) override {
+        if (hardware_interface::SystemInterface::on_init(params) != hardware_interface::CallbackReturn::SUCCESS) {
             return hardware_interface::CallbackReturn::ERROR;
         }
 
