@@ -55,13 +55,13 @@ add_custom_command(
   OUTPUT "${JOINT_ROUTER_HPP}"
   COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_BASE_DIR}"
   COMMAND Python3::Interpreter "${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_joint_router.py"
-          --xacro "${CMAKE_CURRENT_SOURCE_DIR}/urdf/robot.xacro"
+          --bus "${CMAKE_CURRENT_SOURCE_DIR}/config/bus.xml"
           --template-dir "${CMAKE_CURRENT_SOURCE_DIR}/scripts/templates"
           --output "${JOINT_ROUTER_HPP}"
-  DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/urdf/robot.xacro"
+  DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/config/bus.xml"
           "${CMAKE_CURRENT_SOURCE_DIR}/scripts/templates/joint_router.hpp.jinja2"
           "${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_joint_router.py"
-  COMMENT "† Generating JointRouter from URDF... †"
+  COMMENT "† Generating JointRouter from bus.xml... †"
 )
 
 # ==============================================================================
@@ -112,10 +112,9 @@ install(
 )
 
 install(
-  DIRECTORY urdf config
+  DIRECTORY config
   DESTINATION share/${PROJECT_NAME}
 )
 
-ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 ament_package()

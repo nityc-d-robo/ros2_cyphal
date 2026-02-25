@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 import argparse
 import xml.etree.ElementTree as ET
-import subprocess
 from jinja2 import Environment, FileSystemLoader
 
 def dsdl_to_c_info(dsdl_string):
-    # "reg.udral...Planar.0.1" -> "reg_udral_..._0_1", "reg/udral/.../Planar_0_1.h"
     parts = dsdl_string.split('.')
     name_parts = parts[:-2]
     version = f"{parts[-2]}_{parts[-1]}"
@@ -15,65 +13,50 @@ def dsdl_to_c_info(dsdl_string):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--xacro", required=True)
+    parser.add_argument("--bus", required=True, help="Path to bus.xml (cyphal mapping config)")
     parser.add_argument("--output", required=True)
     parser.add_argument("--template-dir", required=True)
     args = parser.parse_args()
 
-    # Xacro展開
-    urdf_xml = subprocess.check_output(["xacro", args.xacro]).decode('utf-8')
-    root = ET.fromstring(urdf_xml)
+    root = ET.parse(args.bus).getroot()
 
     rx_joints = []
     tx_joints = []
     headers = set()
 
-    # ルートが <ros2_control> 直接（xacroスニペット）の場合と
-    # <robot> ルートのフルURDFの場合の両方に対応
-    if root.tag == "ros2_control":
-        joint_elements = root.findall("joint")
-    else:
-        joint_elements = root.findall(".//ros2_control/joint")
-
-    for i, joint in enumerate(joint_elements):
-        params = {p.get("name"): p.text for p in joint.findall("param")}
-
-        # --- RX ---
-        if "rx_dsdl_type" in params and "rx_subject_id" in params:
-            c_type, c_header = dsdl_to_c_info(params["rx_dsdl_type"])
+    for i, joint in enumerate(root.findall("joint")):
+        for state_node in joint.findall("state"):
+            dsdl_type = state_node.get("dsdl_type")
+            subject_id = state_node.get("subject_id")
+            c_type, c_header = dsdl_to_c_info(dsdl_type)
             headers.add(c_header)
 
-            mappings = []
-            for key, value in params.items():
-                if key.startswith("map_state_"):
-                    mappings.append({
-                        "interface": key.replace("map_state_", ""),
-                        "member": value
-                    })
+            mappings = [
+                {"interface": m.get("interface"), "member": m.get("member")}
+                for m in state_node.findall("map")
+            ]
 
             rx_joints.append({
                 "index": i,
-                "subject_id": params["rx_subject_id"],
+                "subject_id": subject_id,
                 "c_type": c_type,
                 "mappings": mappings
             })
 
-        # --- TX ---
-        if "tx_dsdl_type" in params and "tx_subject_id" in params:
-            c_type, c_header = dsdl_to_c_info(params["tx_dsdl_type"])
+        for command_node in joint.findall("command"):
+            dsdl_type = command_node.get("dsdl_type")
+            subject_id = command_node.get("subject_id")
+            c_type, c_header = dsdl_to_c_info(dsdl_type)
             headers.add(c_header)
 
-            mappings = []
-            for key, value in params.items():
-                if key.startswith("map_command_"):
-                    mappings.append({
-                        "interface": key.replace("map_command_", ""),
-                        "member": value
-                    })
+            mappings = [
+                {"interface": m.get("interface"), "member": m.get("member")}
+                for m in command_node.findall("map")
+            ]
 
             tx_joints.append({
                 "index": i,
-                "subject_id": params["tx_subject_id"],
+                "subject_id": subject_id,
                 "c_type": c_type,
                 "mappings": mappings
             })
